@@ -39,16 +39,16 @@ export default async function Home() {
               </h2>
               <div className="space-y-4 text-gray-300 text-lg leading-relaxed">
                 <p>
-                  Hi, I'm <span className="text-lantern-gold font-semibold">Sven</span>, and I have a fascination with lanterns.
+                  Hi, I'm <span className="text-lantern-gold font-semibold">Sven</span>, and I love lanterns.
                 </p>
                 <p>
-                  There's something magical about their soft, warm glow—the way they transform ordinary spaces into atmospheres filled with charm and mystery. Whether it's a traditional paper lantern swaying in the breeze at a festival, an ornate metal lantern casting intricate shadows in a narrow alley, or a simple glowing light guiding the way through darkness, each one has its own story to tell.
+                  I love the glow, warmth, and direction they represent. Lanterns have been on many of my journeys. From marathons to 100km+ bike rides to the Mammut Marsch (a 100km march), to quiet strolls at night, they've lit the way and created moments of wonder.
                 </p>
                 <p>
-                  During my journeys around the world, I've encountered countless lanterns—each one unique, each one special. From bustling night markets in Asia to quiet European streets, from desert oases to coastal towns, lanterns have been my constant companions, lighting the way and creating moments of wonder.
+                  The lanterns in this collection come from all over Germany and Spain currently, captured during these adventures. Each one tells a story of a place, a moment, a journey completed or still underway.
                 </p>
                 <p>
-                  This blog is my way of sharing the <span className="text-lantern-amber">coolest lanterns</span> I've discovered along the way. I hope their light brings you as much joy as it has brought me.
+                  This is my way of sharing the <span className="text-lantern-amber">coolest lanterns</span> I've discovered along the way. I hope their light brings you as much joy as it has brought me.
                 </p>
               </div>
             </div>
