@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import imageCompression from 'browser-image-compression';
 
 interface Photo {
   id: number;
@@ -20,6 +21,7 @@ export default function AdminDashboard() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [compressing, setCompressing] = useState(false);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const router = useRouter();
 
@@ -72,10 +74,30 @@ export default function AdminDashboard() {
     if (!file || !title) return;
 
     setUploading(true);
+    setCompressing(true);
 
     try {
+      // Compress image before upload
+      const options = {
+        maxSizeMB: 3, // Maximum file size in MB
+        maxWidthOrHeight: 2048, // Maximum width or height
+        useWebWorker: true,
+        fileType: 'image/jpeg',
+        initialQuality: 0.85, // Good quality
+        alwaysKeepResolution: false, // Allow resize
+        preserveExif: false, // Don't preserve EXIF (will auto-rotate based on EXIF then remove it)
+      };
+
+      console.log('Original file size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+
+      const compressedFile = await imageCompression(file, options);
+
+      console.log('Compressed file size:', (compressedFile.size / 1024 / 1024).toFixed(2), 'MB');
+
+      setCompressing(false);
+
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', compressedFile);
       formData.append('title', title);
       if (description) formData.append('description', description);
       if (location) formData.append('location', location);
@@ -99,13 +121,15 @@ export default function AdminDashboard() {
         // Reload photos
         await loadPhotos();
       } else {
-        alert('Failed to upload photo');
+        const errorData = await response.json().catch(() => ({}));
+        alert(`Failed to upload photo: ${errorData.error || 'Unknown error'}`);
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Failed to upload photo');
+      alert(`Failed to upload photo: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setUploading(false);
+      setCompressing(false);
     }
   }
 
@@ -267,7 +291,7 @@ export default function AdminDashboard() {
                 disabled={uploading || !file || !title}
                 className="w-full py-3 bg-lantern-amber hover:bg-lantern-gold text-lantern-dark font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
               >
-                {uploading ? 'Uploading...' : 'Upload Photo'}
+                {compressing ? '🔄 Compressing image...' : uploading ? '📤 Uploading...' : 'Upload Photo'}
               </button>
             </form>
           </div>
