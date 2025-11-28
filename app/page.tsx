@@ -1,130 +1,174 @@
+import Link from 'next/link';
+import Navigation from '@/components/Navigation';
 import { getPhotos } from '@/lib/db';
 import Image from 'next/image';
-import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const photos = await getPhotos();
+  const featuredPhotos = photos.slice(0, 3); // Show 3 latest photos
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-lantern-dark/80 border-b border-lantern-amber/20">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
+      <Navigation />
+
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-20 text-center">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-lantern-amber via-lantern-gold to-lantern-glow bg-clip-text text-transparent animate-float">
+            Welcome to Laterna
+          </h1>
+          <p className="text-2xl text-gray-300 mb-4">
+            A Journey Through Light & Lanterns
+          </p>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            Where every glow tells a story from around the world
+          </p>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="max-w-4xl mx-auto bg-lantern-navy/50 border border-lantern-amber/20 rounded-2xl p-12 lantern-glow">
+          <div className="flex items-start gap-6 mb-8">
+            <div className="text-6xl">🏮</div>
             <div>
-              <h1 className="text-4xl font-bold text-lantern-gold">
-                🏮 Laterna
-              </h1>
-              <p className="text-sm text-gray-400 mt-1">
-                Capturing the glow of lanterns around the world
-              </p>
+              <h2 className="text-3xl font-bold text-lantern-gold mb-4">
+                About This Project
+              </h2>
+              <div className="space-y-4 text-gray-300 text-lg leading-relaxed">
+                <p>
+                  Hi, I'm <span className="text-lantern-gold font-semibold">Sven</span>, and I have a fascination with lanterns.
+                </p>
+                <p>
+                  There's something magical about their soft, warm glow—the way they transform ordinary spaces into atmospheres filled with charm and mystery. Whether it's a traditional paper lantern swaying in the breeze at a festival, an ornate metal lantern casting intricate shadows in a narrow alley, or a simple glowing light guiding the way through darkness, each one has its own story to tell.
+                </p>
+                <p>
+                  During my journeys around the world, I've encountered countless lanterns—each one unique, each one special. From bustling night markets in Asia to quiet European streets, from desert oases to coastal towns, lanterns have been my constant companions, lighting the way and creating moments of wonder.
+                </p>
+                <p>
+                  This blog is my way of sharing the <span className="text-lantern-amber">coolest lanterns</span> I've discovered along the way. I hope their light brings you as much joy as it has brought me.
+                </p>
+              </div>
             </div>
+          </div>
+
+          <div className="pt-8 border-t border-lantern-amber/20 text-center">
+            <p className="text-gray-400 mb-6">
+              Join me on this luminous journey
+            </p>
             <Link
-              href="/admin"
-              className="px-4 py-2 text-sm bg-lantern-amber/10 hover:bg-lantern-amber/20 border border-lantern-amber/30 rounded-lg transition-all"
+              href="/gallery"
+              className="inline-block px-8 py-4 bg-lantern-amber hover:bg-lantern-gold text-lantern-dark font-bold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
-              Admin
+              Explore the Gallery →
             </Link>
           </div>
         </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16 text-center">
-        <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-lantern-amber via-lantern-gold to-lantern-glow bg-clip-text text-transparent">
-          A Journey Through Light
-        </h2>
-        <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
-          Every lantern tells a story. Explore my collection of lantern photography
-          from travels across the globe.
-        </p>
       </section>
 
-      {/* Gallery */}
-      <section className="container mx-auto px-4 pb-20">
-        {photos.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="inline-block p-8 rounded-2xl bg-lantern-navy/50 border border-lantern-amber/20">
-              <p className="text-2xl text-lantern-gold mb-2">🏮</p>
-              <p className="text-xl text-gray-300 mb-2">No photos yet</p>
-              <p className="text-sm text-gray-400">
-                Upload your first lantern photo from the{' '}
-                <Link href="/admin" className="text-lantern-amber hover:text-lantern-gold underline">
-                  admin panel
-                </Link>
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {photos.map((photo) => (
-              <article
+      {/* Featured Lanterns */}
+      {featuredPhotos.length > 0 && (
+        <section className="container mx-auto px-4 py-16">
+          <h2 className="text-3xl font-bold text-center text-lantern-gold mb-12">
+            Latest Discoveries
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {featuredPhotos.map((photo) => (
+              <Link
                 key={photo.id}
+                href="/gallery"
                 className="group relative overflow-hidden rounded-2xl bg-lantern-navy/50 border border-lantern-amber/20 lantern-glow-hover"
               >
-                {/* Image Container */}
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image
                     src={photo.thumbnail_url || photo.image_url}
                     alt={photo.title}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, 33vw"
                   />
-                  {/* Overlay gradient */}
                   <div className="absolute inset-0 bg-gradient-to-t from-lantern-dark via-transparent to-transparent opacity-60" />
                 </div>
-
-                {/* Content */}
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-lantern-gold mb-2">
+                <div className="p-4">
+                  <h3 className="text-lg font-bold text-lantern-gold">
                     {photo.title}
                   </h3>
-
-                  {photo.description && (
-                    <p className="text-gray-300 text-sm mb-3 line-clamp-2">
-                      {photo.description}
+                  {photo.location && (
+                    <p className="text-sm text-gray-400 mt-1">
+                      📍 {photo.location}
                     </p>
                   )}
-
-                  <div className="flex items-center gap-4 text-xs text-gray-400">
-                    {photo.location && (
-                      <span className="flex items-center gap-1">
-                        <span>📍</span>
-                        {photo.location}
-                      </span>
-                    )}
-                    {photo.date_taken && (
-                      <span className="flex items-center gap-1">
-                        <span>📅</span>
-                        {new Date(photo.date_taken).toLocaleDateString()}
-                      </span>
-                    )}
-                  </div>
                 </div>
-
-                {/* View button on hover */}
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Link
-                    href={photo.image_url}
-                    target="_blank"
-                    className="px-4 py-2 bg-lantern-amber hover:bg-lantern-gold text-lantern-dark font-semibold rounded-lg text-sm shadow-lg"
-                  >
-                    View Full
-                  </Link>
-                </div>
-              </article>
+              </Link>
             ))}
           </div>
-        )}
+          <div className="text-center mt-12">
+            <Link
+              href="/gallery"
+              className="text-lantern-amber hover:text-lantern-gold transition-colors font-medium"
+            >
+              View All Lanterns →
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* Quick Links */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <Link
+            href="/gallery"
+            className="p-8 bg-lantern-navy/30 border border-lantern-amber/20 rounded-xl hover:border-lantern-amber/40 transition-all text-center group"
+          >
+            <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">
+              🖼️
+            </div>
+            <h3 className="text-xl font-bold text-lantern-gold mb-2">
+              Full Gallery
+            </h3>
+            <p className="text-gray-400 text-sm">
+              Browse all {photos.length} lantern{photos.length !== 1 ? 's' : ''} from my travels
+            </p>
+          </Link>
+
+          <Link
+            href="/random"
+            className="p-8 bg-lantern-navy/30 border border-lantern-amber/20 rounded-xl hover:border-lantern-amber/40 transition-all text-center group"
+          >
+            <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">
+              🎲
+            </div>
+            <h3 className="text-xl font-bold text-lantern-gold mb-2">
+              Random Lantern
+            </h3>
+            <p className="text-gray-400 text-sm">
+              Discover a surprise lantern
+            </p>
+          </Link>
+
+          <Link
+            href="/faq"
+            className="p-8 bg-lantern-navy/30 border border-lantern-amber/20 rounded-xl hover:border-lantern-amber/40 transition-all text-center group"
+          >
+            <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">
+              ❓
+            </div>
+            <h3 className="text-xl font-bold text-lantern-gold mb-2">
+              FAQ
+            </h3>
+            <p className="text-gray-400 text-sm">
+              Learn more about this project
+            </p>
+          </Link>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-lantern-amber/20 bg-lantern-dark/50 backdrop-blur">
+      <footer className="border-t border-lantern-amber/20 bg-lantern-dark/50 backdrop-blur mt-12">
         <div className="container mx-auto px-4 py-8 text-center text-gray-400 text-sm">
-          <p>© {new Date().getFullYear()} Laterna. Made with ✨ and 🏮</p>
+          <p>© {new Date().getFullYear()} Laterna by Sven. Made with ✨ and 🏮</p>
         </div>
       </footer>
     </div>
